@@ -4,27 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TypingPractice"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewmodels="clr-namespace:TypingPractice.ViewModels"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowVM}"
+        
+        
+        
+        Background="{DynamicResource MaterialDesignBody}"
+        
+        TextElement.Foreground="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+
         mc:Ignorable="d"
+        FocusManager.FocusedElement="{Binding ElementName=TypingTextBox}"
         Title="MainWindow" Height="450" Width="800">
 
     <Window.Resources>
+        <local:RadioButtonConverter x:Key="radioToEnumConverter" />
         <Style x:Key="CenterAlign" TargetType="{x:Type FrameworkElement}">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style TargetType="{x:Type StackPanel}">
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
         </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource CenterAlign}" Text="{Binding CurrentTimer,StringFormat=ss\\.ff}"></TextBlock>
-        <TextBlock Grid.Row="1" Style="{StaticResource CenterAlign}" FontSize="42" Text="{Binding CurrentWord}"></TextBlock>
-        <TextBox Grid.Row="2" TextAlignment="Center" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
-        <Button Grid.Row="3" Command="{Binding CancelStopper}"></Button>
+        <StackPanel Orientation="Horizontal">
+            <Label>Select a difficulty:</Label>
+            <StackPanel Margin="3">
+                <RadioButton IsChecked="{Binding Path=Difficulty, Converter={StaticResource radioToEnumConverter}, ConverterParameter={x:Static viewmodels:DifficultyEnum.Easy}}">Easy</RadioButton>
+                <RadioButton IsChecked="{Binding Path=Difficulty, Converter={StaticResource radioToEnumConverter}, ConverterParameter={x:Static viewmodels:DifficultyEnum.Medium}}">Medium</RadioButton>
+                <RadioButton IsChecked="{Binding Path=Difficulty, Converter={StaticResource radioToEnumConverter}, ConverterParameter={x:Static viewmodels:DifficultyEnum.Hard}}">Hard</RadioButton>
+            </StackPanel>
+            <Button Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding StartGame}">Start</Button>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Style="{StaticResource CenterAlign}" Text="{Binding CurrentTimer,StringFormat=ss\\.ff}"></TextBlock>
+        <TextBlock Grid.Row="2" Style="{StaticResource CenterAlign}" FontSize="42" Text="{Binding CurrentWord}"></TextBlock>
+        <TextBox  Grid.Row="3" x:Name="TypingTextBox" TextAlignment="Center" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
+        <Button Foreground="White" Grid.Row="4" Command="{Binding CancelStopper}">Stop</Button>
     </Grid>
 </Window>

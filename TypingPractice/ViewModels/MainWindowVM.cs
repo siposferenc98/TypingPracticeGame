@@ -11,6 +11,12 @@ using System.Windows.Input;
 
 namespace TypingPractice.ViewModels
 {
+    public enum DifficultyEnum
+    {
+        Easy,
+        Medium,
+        Hard
+    }
     internal class MainWindowVM : INotifyPropertyChanged
     {
         private readonly Words _words = new();
@@ -52,14 +58,13 @@ namespace TypingPractice.ViewModels
                 RaisePropertyChanged();
             }
         }
-
+        public DifficultyEnum Difficulty { get; set; } = DifficultyEnum.Medium;
+        public ICommand StartGame => new Button(() => StartAGame());
         public ICommand CancelStopper => new Button(() => _timerTokenSource.Cancel() );
 
         public MainWindowVM()
         {
-            CancellationToken token = _timerTokenSource.Token;
-            CurrentWord = _words.GetRandomWord();
-            Task.Run(() => StartTimerAsync(token));
+
         }
 
         private async void StartTimerAsync(CancellationToken token)
@@ -88,6 +93,12 @@ namespace TypingPractice.ViewModels
             if(CurrentTextBoxValue == CurrentWord)
                 return true;
             return false;
+        }
+        private void StartAGame()
+        {
+            CancellationToken token = _timerTokenSource.Token;
+            CurrentWord = _words.GetRandomWord();
+            Task.Run(() => StartTimerAsync(token));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
