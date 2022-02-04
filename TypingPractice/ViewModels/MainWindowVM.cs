@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows;
 
 namespace TypingPractice.ViewModels
 {
@@ -108,7 +109,8 @@ namespace TypingPractice.ViewModels
         public bool DifficultyPanelIsEnabled => !_stopwatch.IsRunning;
 
         public ICommand StartGame => new Button(() => StartAGame());
-        public ICommand CancelStopper => new ButtonCE(() => _timerTokenSource.Cancel(),CancelStopperCE);
+        public ICommand SaveHighScore => new ButtonCE(ShowSaveHighScoreWindow, SaveHighScoreCE);
+        public ICommand StopGame => new ButtonCE(() => _timerTokenSource.Cancel(),CancelStopperCE);
 
         public MainWindowVM()
         {
@@ -122,7 +124,7 @@ namespace TypingPractice.ViewModels
         private async void StartTimerAsync(CancellationToken token)
         {
             _stopwatch.Restart();
-            await RaisePropertiesChanged();
+            RaisePropertyChanged("DifficultyPanelIsEnabled");
             FocusTextBox?.Invoke(this,EventArgs.Empty);
 
             while (_stopwatch.IsRunning && Game.Lives > 0)
@@ -137,15 +139,13 @@ namespace TypingPractice.ViewModels
             _stopwatch.Stop();
             Game.Elapsed.Stop();
             SetTimers();
-            await RaisePropertiesChanged();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                CommandManager.InvalidateRequerySuggested();
+            });
+            RaisePropertyChanged("DifficultyPanelIsEnabled");
         }
 
-        private Task RaisePropertiesChanged()
-        {
-            RaisePropertyChanged("DifficultyPanelIsEnabled");
-            RaisePropertyChanged("StopButtonIsEnabled");
-            return Task.CompletedTask;
-        }
         private void GetANewWordAndRestartTheTimer()
         {
             CurrentWord = _words.GetRandomWord();
@@ -174,10 +174,14 @@ namespace TypingPractice.ViewModels
             _startingTime = Time;
         }
 
-        private void ShowHighScoreWindow()
+        private void ShowSaveHighScoreWindow()
         {
-            SaveHighScore saveHighScore = new();
+            SaveHighScore saveHighScore = new(Game);
             saveHighScore.ShowDialog();
+        }
+        private bool SaveHighScoreCE()
+        {
+            return !_stopwatch.IsRunning && Game.Elapsed.Elapsed > TimeSpan.Zero;
         }
         private bool CancelStopperCE()
         {

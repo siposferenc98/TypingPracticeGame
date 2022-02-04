@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace TypingPractice.Models
 {
-    internal class Game : INotifyPropertyChanged
+    public class Game : INotifyPropertyChanged
     {
         private int _lives;
-        private string _name;
+        private string _name = string.Empty;
         private int _score;
         private int _characters;
         private Stopwatch _elapsed = new();
@@ -37,7 +37,7 @@ namespace TypingPractice.Models
                 RaisePropertyChanged();
             } 
         }
-        public double Wpm => (Characters / 5) / Elapsed.Elapsed.TotalMinutes;
+        public double Wpm => double.IsNaN(Math.Round((Characters / 5) / Elapsed.Elapsed.TotalMinutes)) ? 0 : Math.Round((Characters / 5) / Elapsed.Elapsed.TotalMinutes);
         public int Characters 
         {
             get => _characters;

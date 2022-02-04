@@ -19,9 +19,11 @@ namespace TypingPractice
     /// </summary>
     public partial class SaveHighScore : Window
     {
-        public SaveHighScore()
+        public SaveHighScore(Game game)
         {
             InitializeComponent();
+            SaveHighScoreVM viewModel = new(game);
+            DataContext = viewModel;
         }
     }
 }
