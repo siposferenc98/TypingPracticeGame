@@ -8,8 +8,6 @@
         xmlns:viewmodels="clr-namespace:TypingPractice.ViewModels"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowVM}"
         
-        
-        
         Background="{DynamicResource MaterialDesignBody}"
         
         TextElement.Foreground="{DynamicResource MaterialDesignPaper}"
@@ -18,7 +16,6 @@
         FontFamily="{materialDesign:MaterialDesignFont}"
 
         mc:Ignorable="d"
-        FocusManager.FocusedElement="{Binding ElementName=TypingTextBox}"
         Title="MainWindow" Height="450" Width="800">
 
     <Window.Resources>
@@ -45,7 +42,8 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        
+        <StackPanel Orientation="Horizontal" IsEnabled="{Binding DifficultyPanelIsEnabled}">
             <Label>Select a difficulty:</Label>
             <StackPanel Margin="3">
                 <RadioButton IsChecked="{Binding Path=Difficulty, Converter={StaticResource radioToEnumConverter}, ConverterParameter={x:Static viewmodels:DifficultyEnum.Easy}}">Easy</RadioButton>
@@ -54,9 +52,17 @@
             </StackPanel>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding StartGame}">Start</Button>
         </StackPanel>
-        <TextBlock Grid.Row="1" Style="{StaticResource CenterAlign}" Text="{Binding CurrentTimer,StringFormat=ss\\.ff}"></TextBlock>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock></TextBlock>
+            <TextBlock Grid.Column="1" FontSize="24" Style="{StaticResource CenterAlign}" Text="{Binding CurrentTimer,StringFormat=ss\\.ff}"></TextBlock>
+        </Grid>
         <TextBlock Grid.Row="2" Style="{StaticResource CenterAlign}" FontSize="42" Text="{Binding CurrentWord}"></TextBlock>
-        <TextBox  Grid.Row="3" x:Name="TypingTextBox" TextAlignment="Center" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
-        <Button Foreground="White" Grid.Row="4" Command="{Binding CancelStopper}">Stop</Button>
+        <TextBox  Grid.Row="3" TextAlignment="Center" x:Name="TypingTextBox" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
+        <Button Foreground="White" Grid.Row="4" IsEnabled="{Binding StopButtonIsEnabled}" Command="{Binding CancelStopper}">Stop</Button>
     </Grid>
 </Window>

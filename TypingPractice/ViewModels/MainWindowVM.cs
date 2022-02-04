@@ -23,10 +23,20 @@ namespace TypingPractice.ViewModels
         private string _currentWord = string.Empty;
         private string _currentTextBoxValue = string.Empty;
         private TimeSpan _currentTimer;
-        private TimeSpan _currentRoundStartValue = TimeSpan.FromSeconds(5);
+        private TimeSpan _currentRoundStartValue;
+        private TimeSpan _startingTime;
+        private DifficultyEnum _difficulty = DifficultyEnum.Medium;
         private readonly Stopwatch _stopwatch = new();
-        private readonly CancellationTokenSource _timerTokenSource = new();
-        
+        private CancellationTokenSource _timerTokenSource = new();
+
+        public event EventHandler? FocusTextBox;
+        private TimeSpan Time => Difficulty switch
+        {
+            DifficultyEnum.Easy => TimeSpan.FromSeconds(10),
+            DifficultyEnum.Medium => TimeSpan.FromSeconds(7),
+            DifficultyEnum.Hard => TimeSpan.FromSeconds(5),
+            _ => throw new NotImplementedException()
+        };
 
         public string CurrentWord 
         {
@@ -43,7 +53,11 @@ namespace TypingPractice.ViewModels
             set
             {
                 _currentTextBoxValue = value;
-                if(CheckIfWordsMatch() && _stopwatch.IsRunning)
+                if(!CurrentWord.StartsWith(CurrentTextBoxValue) && _stopwatch.IsRunning)
+                {
+                    _currentTextBoxValue = string.Empty;
+                }
+                if (CurrentTextBoxValue == CurrentWord && _stopwatch.IsRunning)
                 {
                     GetANewWordAndRestartTheTimer();
                 }
@@ -58,47 +72,71 @@ namespace TypingPractice.ViewModels
                 RaisePropertyChanged();
             }
         }
-        public DifficultyEnum Difficulty { get; set; } = DifficultyEnum.Medium;
+        public DifficultyEnum Difficulty
+        {
+            get => _difficulty;
+            set
+            {
+                _difficulty = value;
+                SetTimers();
+            }
+        }
+        public bool DifficultyPanelIsEnabled => !_stopwatch.IsRunning;
+        public bool StopButtonIsEnabled => _stopwatch.IsRunning;
+
         public ICommand StartGame => new Button(() => StartAGame());
         public ICommand CancelStopper => new Button(() => _timerTokenSource.Cancel() );
 
         public MainWindowVM()
         {
-
+            SetTimers();
         }
 
         private async void StartTimerAsync(CancellationToken token)
         {
-            _stopwatch.Start();
+            _stopwatch.Restart();
+            await RaisePropertiesChanged();
+            FocusTextBox?.Invoke(this,EventArgs.Empty);
+
             while (_stopwatch.IsRunning)
             {
                 CurrentTimer = _currentRoundStartValue - _stopwatch.Elapsed;
                 if (CurrentTimer <= TimeSpan.Zero || token.IsCancellationRequested)
-                    _stopwatch.Stop();
+                    break;
                 await Task.Delay(10,CancellationToken.None);
             }
+
+            _stopwatch.Stop();
+            SetTimers();
+            await RaisePropertiesChanged();
         }
 
+        private Task RaisePropertiesChanged()
+        {
+            RaisePropertyChanged("DifficultyPanelIsEnabled");
+            RaisePropertyChanged("StopButtonIsEnabled");
+            return Task.CompletedTask;
+        }
         private void GetANewWordAndRestartTheTimer()
         {
             CurrentWord = _words.GetRandomWord();
             _currentTextBoxValue = string.Empty;
+            if (_startingTime / _currentRoundStartValue < 2)
+                _currentRoundStartValue = _currentRoundStartValue.Subtract(TimeSpan.FromSeconds(0.5));
             _stopwatch.Restart();
-            if (_currentRoundStartValue > TimeSpan.FromSeconds(2))
-                _currentRoundStartValue = _currentRoundStartValue.Subtract(TimeSpan.FromSeconds(1));
-        }
-
-        private bool CheckIfWordsMatch()
-        {
-            if(CurrentTextBoxValue == CurrentWord)
-                return true;
-            return false;
         }
         private void StartAGame()
         {
+            _timerTokenSource = new();
             CancellationToken token = _timerTokenSource.Token;
             CurrentWord = _words.GetRandomWord();
             Task.Run(() => StartTimerAsync(token));
+        }
+        private void SetTimers()
+        {
+            CurrentTimer = Time;
+            _currentRoundStartValue = Time;
+            _startingTime = Time;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

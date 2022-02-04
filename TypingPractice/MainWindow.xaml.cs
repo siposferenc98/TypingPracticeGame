@@ -25,8 +25,17 @@ namespace TypingPractice
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowVM();
-            Words words = new();
+            MainWindowVM ViewModel = new();
+            DataContext = ViewModel;
+            ViewModel.FocusTextBox += ViewModel_FocusTextBox;
+        }
+
+        private void ViewModel_FocusTextBox(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                TypingTextBox.Focus();
+            });
         }
     }
 }
