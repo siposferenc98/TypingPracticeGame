@@ -10,7 +10,7 @@ namespace TypingPractice.Models
 {
     internal class Words
     {
-        private List<string> WordsList = Resources.ResourceManager.GetString("Words")!.Split("\n").ToList();
+        private List<string> WordsList = Resources.ResourceManager.GetString("Words")!.Split("\r\n").ToList();
 
         public Words()
         {
