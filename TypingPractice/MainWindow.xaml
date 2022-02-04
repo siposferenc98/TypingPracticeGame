@@ -20,7 +20,7 @@
 
     <Window.Resources>
         <local:RadioButtonConverter x:Key="radioToEnumConverter" />
-        <Style x:Key="CenterAlign" TargetType="{x:Type FrameworkElement}">
+        <Style TargetType="{x:Type TextBlock}">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
@@ -58,11 +58,15 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock></TextBlock>
-            <TextBlock Grid.Column="1" FontSize="24" Style="{StaticResource CenterAlign}" Text="{Binding CurrentTimer,StringFormat=ss\\.ff}"></TextBlock>
+            <TextBlock Text="{Binding Game.Lives, StringFormat=Lives: {0} }"></TextBlock>
+            <TextBlock Grid.Column="1" FontSize="24" Text="{Binding CurrentTimer,StringFormat=ss\\.ff}"></TextBlock>
+            <StackPanel Grid.Column="2">
+                <TextBlock  Text="{Binding Game.Wpm, StringFormat=WPM: {0} }"></TextBlock>
+                <TextBlock  Text="{Binding Game.Score, StringFormat=Score: {0} }"></TextBlock>
+            </StackPanel>
         </Grid>
-        <TextBlock Grid.Row="2" Style="{StaticResource CenterAlign}" FontSize="42" Text="{Binding CurrentWord}"></TextBlock>
+        <TextBlock Grid.Row="2" FontSize="42" Text="{Binding CurrentWord}"></TextBlock>
         <TextBox  Grid.Row="3" TextAlignment="Center" x:Name="TypingTextBox" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
-        <Button Foreground="White" Grid.Row="4" IsEnabled="{Binding StopButtonIsEnabled}" Command="{Binding CancelStopper}">Stop</Button>
+        <Button Foreground="White" Grid.Row="4" Command="{Binding CancelStopper}">Stop</Button>
     </Grid>
 </Window>
