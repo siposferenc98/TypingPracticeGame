@@ -15,7 +15,7 @@ namespace TypingPractice.Models
         private string _name = string.Empty;
         private int _score;
         private int _characters;
-        private Stopwatch _elapsed = new();
+        public Stopwatch _elapsed = new();
 
         public string? Difficulty { get; set; }
         public int Lives
@@ -37,7 +37,7 @@ namespace TypingPractice.Models
                 RaisePropertyChanged();
             } 
         }
-        public double Wpm => double.IsNaN(Math.Round((Characters / 5) / Elapsed.Elapsed.TotalMinutes)) ? 0 : Math.Round((Characters / 5) / Elapsed.Elapsed.TotalMinutes);
+        public double Wpm => double.IsNaN(Math.Round((Characters / 5) / Elapsed.TotalMinutes)) ? 0 : Math.Round((Characters / 5) / Elapsed.TotalMinutes);
         public int Characters 
         {
             get => _characters;
@@ -47,7 +47,7 @@ namespace TypingPractice.Models
                 RaisePropertyChanged("Wpm");
             }
         }
-        public Stopwatch Elapsed { get => _elapsed;}
+        public TimeSpan Elapsed { get => _elapsed.Elapsed;}
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void RaisePropertyChanged([CallerMemberName] string? property = null)

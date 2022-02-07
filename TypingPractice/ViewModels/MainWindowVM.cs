@@ -110,6 +110,7 @@ namespace TypingPractice.ViewModels
 
         public ICommand StartGame => new Button(() => StartAGame());
         public ICommand SaveHighScore => new ButtonCE(ShowSaveHighScoreWindow, SaveHighScoreCE);
+        public ICommand ShowLeaderboard => new Button(ShowLeaderBoard);
         public ICommand StopGame => new ButtonCE(() => _timerTokenSource.Cancel(),CancelStopperCE);
 
         public MainWindowVM()
@@ -137,7 +138,7 @@ namespace TypingPractice.ViewModels
             }
 
             _stopwatch.Stop();
-            Game.Elapsed.Stop();
+            Game._elapsed.Stop();
             SetTimers();
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -164,7 +165,7 @@ namespace TypingPractice.ViewModels
                 Lives = Lives,
                 Difficulty = Difficulty.ToString()
             };
-            Game.Elapsed.Start();
+            Game._elapsed.Start();
             Task.Run(() => StartTimerAsync(token));
         }
         private void SetTimers()
@@ -181,7 +182,13 @@ namespace TypingPractice.ViewModels
         }
         private bool SaveHighScoreCE()
         {
-            return !_stopwatch.IsRunning && Game.Elapsed.Elapsed > TimeSpan.Zero;
+            return !_stopwatch.IsRunning && Game.Elapsed > TimeSpan.Zero;
+        }
+
+        private void ShowLeaderBoard()
+        {
+            Leaderboard leaderboard = new();
+            leaderboard.Show();
         }
         private bool CancelStopperCE()
         {
