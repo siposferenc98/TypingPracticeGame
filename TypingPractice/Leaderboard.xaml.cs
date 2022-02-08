@@ -24,5 +24,14 @@ namespace TypingPractice
             InitializeComponent();
             DataContext = new LeaderBoardVM();
         }
+
+
+        //Probably breaks MVVM pattern but whatever, binding a simple doubleclick trigger to the viewmodel is a chore, especially if i want to send the selected item as a parameter, and do the same for all 3 of the listboxes..
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListBox listBox = (ListBox)sender;
+            SaveHighScore saveHighScoreWindow = new((Game)listBox.SelectedItem,true);
+            saveHighScoreWindow.ShowDialog();
+        }
     }
 }

@@ -138,7 +138,7 @@ namespace TypingPractice.ViewModels
             }
 
             _stopwatch.Stop();
-            Game._elapsed.Stop();
+            Game._stopwatch.Stop();
             SetTimers();
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -165,7 +165,7 @@ namespace TypingPractice.ViewModels
                 Lives = Lives,
                 Difficulty = Difficulty.ToString()
             };
-            Game._elapsed.Start();
+            Game._stopwatch.Start();
             Task.Run(() => StartTimerAsync(token));
         }
         private void SetTimers()
@@ -182,7 +182,7 @@ namespace TypingPractice.ViewModels
         }
         private bool SaveHighScoreCE()
         {
-            return !_stopwatch.IsRunning && Game.Elapsed > TimeSpan.Zero;
+            return !_stopwatch.IsRunning && Game._stopwatch.Elapsed > TimeSpan.Zero;
         }
 
         private void ShowLeaderBoard()

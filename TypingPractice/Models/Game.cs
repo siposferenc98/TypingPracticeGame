@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TypingPractice.Models
@@ -14,20 +15,13 @@ namespace TypingPractice.Models
         private int _lives;
         private string _name = string.Empty;
         private int _score;
+        private double _wpm;
         private int _characters;
-        public Stopwatch _elapsed = new();
+        private TimeSpan _elapsed;
+        public Stopwatch _stopwatch = new();
 
-        public string? Difficulty { get; set; }
-        public int Lives
-        {
-            get => _lives;
-            set 
-            {
-                _lives = value;
-                RaisePropertyChanged();
-            }
-        }
         public string Name { get => _name; set => _name = value; }
+        public string? Difficulty { get; set; }
         public int Score 
         {
             get => _score; 
@@ -37,23 +31,60 @@ namespace TypingPractice.Models
                 RaisePropertyChanged();
             } 
         }
-        public double Wpm => double.IsNaN(Math.Round((Characters / 5) / Elapsed.TotalMinutes)) ? 0 : Math.Round((Characters / 5) / Elapsed.TotalMinutes);
+        public int Lives
+        {
+            get => _lives;
+            set 
+            {
+                _lives = value;
+                RaisePropertyChanged();
+            }
+        }
         public int Characters 
         {
             get => _characters;
             set
             {
                 _characters = value;
-                RaisePropertyChanged("Wpm");
+                Wpm = double.IsNaN(Math.Round((_characters / 5) / _stopwatch.Elapsed.TotalMinutes)) ? 0 : Math.Round((_characters / 5) / _stopwatch.Elapsed.TotalMinutes);
             }
         }
-        public TimeSpan Elapsed { get => _elapsed.Elapsed;}
+        public double Wpm
+        {
+            get => _wpm;
+            set
+            {
+                _wpm = value;
+                RaisePropertyChanged();
+            }
+
+        }
+        public TimeSpan Elapsed
+        {
+            get
+            {
+                if (_elapsed == TimeSpan.Zero)
+                    return _stopwatch.Elapsed;
+                else
+                    return _elapsed;
+            } 
+            set
+            {
+                _elapsed = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void RaisePropertyChanged([CallerMemberName] string? property = null)
         {
             var handler = PropertyChanged;
             handler?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
+        public override string ToString()
+        {
+            return $"Name: {Name}, Score: {Score}";
         }
     }
 }

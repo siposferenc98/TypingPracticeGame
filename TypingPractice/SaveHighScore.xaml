@@ -41,7 +41,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center">
             <Label>Name:</Label>
-            <TextBox BorderBrush="{StaticResource MaterialDesignBackground}" Text="{Binding Game.Name,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <TextBox BorderBrush="{StaticResource MaterialDesignBackground}" x:Name="NameTextBox" Text="{Binding Game.Name,UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
         <StackPanel Grid.Row="1" HorizontalAlignment="Center">
             <Label>Difficulty:</Label>
@@ -65,8 +65,8 @@
         </StackPanel>
         <StackPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center">
             <Label>Elapsed time:</Label>
-            <TextBlock Text="{Binding Game.Elapsed.Elapsed,StringFormat=mm\\.ss\\.ff}"></TextBlock>
+            <TextBlock Text="{Binding Game.Elapsed,StringFormat=mm\\.ss\\.ff}"></TextBlock>
         </StackPanel>
-        <Button Grid.Row="4" Grid.ColumnSpan="2" Command="{Binding SaveButton}">Save</Button>
+        <Button Grid.Row="4" Grid.ColumnSpan="2" x:Name="SaveButton" Command="{Binding SaveButton}">Save</Button>
     </Grid>
 </Window>

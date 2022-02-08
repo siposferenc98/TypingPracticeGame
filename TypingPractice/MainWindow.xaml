@@ -61,7 +61,7 @@
                 <Button Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding StartGame}">Start</Button>
             </StackPanel>
             <StackPanel Grid.Column="2">
-                <Button>Leaderboard</Button>
+                <Button Command="{Binding ShowLeaderboard}">Leaderboard</Button>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1">

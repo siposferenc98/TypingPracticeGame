@@ -35,8 +35,8 @@
         <Label>Easy</Label>
         <Label Grid.Column="1">Medium</Label>
         <Label Grid.Column="2">Hard</Label>
-        <ListBox Grid.Row="1" ItemsSource="{Binding EasyGames}" Foreground="White"></ListBox>
-        <ListBox Grid.Row="1"  Grid.Column="1" ItemsSource="{Binding MediumGames}" Foreground="White"></ListBox>
-        <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding HardGames}" Foreground="White"></ListBox>
+        <ListBox Grid.Row="1" ItemsSource="{Binding EasyGames}" Foreground="White" MouseDoubleClick="ListBox_MouseDoubleClick"></ListBox>
+        <ListBox Grid.Row="1"  Grid.Column="1" ItemsSource="{Binding MediumGames}" Foreground="White" MouseDoubleClick="ListBox_MouseDoubleClick"></ListBox>
+        <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding HardGames}" Foreground="White" MouseDoubleClick="ListBox_MouseDoubleClick"></ListBox>
     </Grid>
 </Window>

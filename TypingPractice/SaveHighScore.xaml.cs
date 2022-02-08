@@ -19,9 +19,11 @@ namespace TypingPractice
     /// </summary>
     public partial class SaveHighScore : Window
     {
-        public SaveHighScore(Game game)
+        public SaveHighScore(Game game, bool isNameReadOnly = false)
         {
             InitializeComponent();
+            NameTextBox.IsReadOnly = isNameReadOnly;
+            SaveButton.Visibility = isNameReadOnly ? Visibility.Collapsed : Visibility.Visible;
             SaveHighScoreVM viewModel = new(game);
             DataContext = viewModel;
         }

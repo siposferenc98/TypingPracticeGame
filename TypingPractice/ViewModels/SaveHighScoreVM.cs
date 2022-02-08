@@ -22,8 +22,11 @@ namespace TypingPractice.ViewModels
         private void SaveJson()
         {
             App.Games.Add(Game);
-            
-            File.WriteAllText("./Games.json", JsonSerializer.Serialize(App.Games));
+            JsonSerializerOptions options = new()
+            {
+                WriteIndented = true,
+            };
+            File.WriteAllText("./Games.json", JsonSerializer.Serialize(App.Games,options));
         }
 
         private bool SaveButtonCE()

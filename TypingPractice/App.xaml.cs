@@ -24,8 +24,16 @@ namespace TypingPractice
 
         private List<Game> ReadFromJson()
         {
-            //return JsonSerializer.Deserialize<List<Game>>(File.ReadAllText("./Games.json"));
-            return new List<Game>();
+            try
+            {
+                return JsonSerializer.Deserialize<List<Game>>(File.ReadAllText("./Games.json"))!;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Couldn't load the leaderboard from JSON, error: {ex.Message}");
+                return new();
+            }
+                    
         }
     }
 }
