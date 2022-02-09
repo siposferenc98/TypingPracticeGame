@@ -51,7 +51,7 @@
             <StackPanel>
                 <Button Command="{Binding SaveHighScore}">Save Result</Button>
             </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding DifficultyPanelIsEnabled}">
+            <StackPanel Grid.Column="1" Orientation="Horizontal" x:Name="DifficultyPanel">
                 <Label>Select a difficulty:</Label>
                 <StackPanel Margin="3">
                     <RadioButton IsChecked="{Binding Path=Difficulty, Converter={StaticResource radioToEnumConverter}, ConverterParameter={x:Static viewmodels:DifficultyEnum.Easy}}">Easy</RadioButton>
@@ -78,7 +78,7 @@
             </StackPanel>
         </Grid>
         <TextBlock Grid.Row="2" FontSize="42" Text="{Binding CurrentWord}"></TextBlock>
-        <TextBox Margin="10" BorderBrush="{StaticResource MaterialDesignBackground}" Grid.Row="3" TextAlignment="Center" x:Name="TypingTextBox" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
+        <TextBox IsEnabled="False" Background="Transparent" Margin="10" BorderBrush="{StaticResource MaterialDesignBackground}" Grid.Row="3" TextAlignment="Center" x:Name="TypingTextBox" VerticalContentAlignment="Center" FontSize="64" Text="{Binding CurrentTextBoxValue,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
         <Button Foreground="White" Grid.Row="4" Command="{Binding StopGame}">Stop</Button>
     </Grid>
 </Window>

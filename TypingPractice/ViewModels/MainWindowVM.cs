@@ -34,6 +34,7 @@ namespace TypingPractice.ViewModels
         private Game _game;
         #endregion
         public event EventHandler? FocusTextBox;
+        public event EventHandler? MissedWord;
         private TimeSpan Time => Difficulty switch
         {
             DifficultyEnum.Easy => TimeSpan.FromSeconds(10),
@@ -66,6 +67,7 @@ namespace TypingPractice.ViewModels
                 _currentTextBoxValue = value;
                 if(!CurrentWord.StartsWith(CurrentTextBoxValue) && _stopwatch.IsRunning)
                 {
+                    MissedWord?.Invoke(this, EventArgs.Empty);
                     _currentTextBoxValue = string.Empty;
                     Game.Lives--;
                 }
@@ -106,7 +108,6 @@ namespace TypingPractice.ViewModels
                 RaisePropertyChanged();
             }
         }
-        public bool DifficultyPanelIsEnabled => !_stopwatch.IsRunning;
 
         public ICommand StartGame => new Button(() => StartAGame());
         public ICommand SaveHighScore => new ButtonCE(ShowSaveHighScoreWindow, SaveHighScoreCE);
@@ -125,7 +126,7 @@ namespace TypingPractice.ViewModels
         private async void StartTimerAsync(CancellationToken token)
         {
             _stopwatch.Restart();
-            RaisePropertyChanged("DifficultyPanelIsEnabled");
+
             FocusTextBox?.Invoke(this,EventArgs.Empty);
 
             while (_stopwatch.IsRunning && Game.Lives > 0)
@@ -144,7 +145,8 @@ namespace TypingPractice.ViewModels
             {
                 CommandManager.InvalidateRequerySuggested();
             });
-            RaisePropertyChanged("DifficultyPanelIsEnabled");
+
+            FocusTextBox?.Invoke(this, EventArgs.Empty);
         }
 
         private void GetANewWordAndRestartTheTimer()
